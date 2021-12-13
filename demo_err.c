@@ -22,9 +22,9 @@ unsigned int dircount = 0, filecount = 0;
 
 long int getInodeNumber(char *basenm)
 {
-    struct stat basestat;
-    stat(basenm, &basestat);
-    return basestat.st_ino;
+    struct stat mstat = {0};
+    stat(basenm, &mstat);
+    return mstat.st_ino;
 }
 
 int toonFileNaam(char *naam, long inodenum, int indent)
@@ -59,25 +59,19 @@ void mkdirnaam(char *path, char *base, char *naam)
 int listFiles(char *base, int indent)
 {
     DIR *currentDir = opendir(base);
-    if (!currentDir)
-    {
-        filecount++;
+    if (NULL == currentDir)
         return DIR_NOT_FOUND_ERROR;
-    }
     dircount++;
     struct dirent *de = 0;
     while (NULL != (de = readdir(currentDir)))
     {
         if (!(strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0))
         {
-            if (de->d_type != DT_DIR)
-            {
+            if (DT_DIR != de->d_type)
                 filecount++;
-            }
-            int inodenum = getInodeNumber(de->d_name);
-            char path[80];
-            memset(path, 0, 80);
+            char path[80] = {};
             mkdirnaam(path, base, de->d_name);
+            int inodenum = getInodeNumber(path);
             toonFileNaam(path, inodenum, indent);
             int err = listFiles(path, indent + 2);
             if (0 != err)
@@ -98,7 +92,7 @@ void toonAantallen()
 int main(int argc, char *argv[])
 {
     setlocale(LC_ALL, " ");
-    char path[80];
+    char path[80] = {};
     // Input path from user
     wprintf(L"Enter path to list files: ");
     scanf("%s", path);
