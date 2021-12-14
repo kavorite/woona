@@ -72,7 +72,7 @@ int listFiles(char *base, int indent)
             char path[80] = {};
             mkdirnaam(path, base, de->d_name);
             int inodenum = getInodeNumber(path);
-            toonFileNaam(path, inodenum, indent);
+            toonFileNaam(de->d_name, inodenum, indent);
             int err = listFiles(path, indent + 2);
             if (0 != err)
                 return err;
@@ -93,7 +93,6 @@ int main(int argc, char *argv[])
 {
     setlocale(LC_ALL, " ");
     char path[80] = {};
-    // Input path from user
     wprintf(L"Enter path to list files: ");
     scanf("%s", path);
     int err = listFiles(path, 0);
