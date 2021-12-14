@@ -39,10 +39,10 @@ int toonFileNaam(char *naam, long inodenum, int indent)
             wprintf(L"%lc", wspace);
 
     wprintf(L"%lc%lc", wsplitbar, whorbar);
-    size_t len = strlen(naam);
-    wchar_t wnaam[len + 1];
+    size_t len = strlen(naam) + 1;
+    wchar_t wnaam[len];
     memset(wnaam, 0, len);
-    swprintf(wnaam, len + 1, L"%s", naam);
+    swprintf(wnaam, len, L"%s", naam);
     wprintf(L"%ls \t[inode=%lu]\n", wnaam, inodenum);
 
     return 0;
